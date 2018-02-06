@@ -3,6 +3,10 @@ dist: trusty
 services: docker
 
 env:
+  - IMAGE=-
+    NAME=azure
+    OMIT_FEATURES=Sha256Password,CachingSha2Password,KnownCertificateAuthority,Timeout,ErrorCodes
+    CONNECTION_STRING="$AZURE_CONNECTION_STRING"
   - IMAGE=mysql:5.6
     NAME=mysql
     OMIT_FEATURES=Json,Sha256Password,RsaEncryption,LargePackets,CachingSha2Password,SessionTrack,Tls11,Tls12
@@ -30,7 +34,7 @@ before_install:
 script:
 - dotnet restore
 - pushd tests/MySqlConnector.Tests && dotnet xunit -c Release && popd
-- pushd tests/Conformance.Tests && CONNECTION_STRING="Server=localhost;Port=3307;User Id=mysqltest;Password='test;key=\"val';SSL Mode=None" dotnet xunit -c Release && popd
+- pushd tests/Conformance.Tests && CONNECTION_STRING=${CONNECTION_STRING:-"Server=localhost;Port=3307;User Id=mysqltest;Password='test;key=\"val';SSL Mode=None"} dotnet xunit -c Release && popd
 - pushd tests/SideBySide
 - dotnet build SideBySide.csproj -c Release -f netcoreapp2.0
 - echo 'Executing netcoreapp1.1.2 tests with No Compression, No SSL' && ../../.ci/use-config.sh config.json 172.17.0.1 3307 $NAME $OMIT_FEATURES && time dotnet xunit -c Release -f netcoreapp1.1.2

@@ -32,7 +32,7 @@ namespace SideBySide
 
 		public static IConfiguration Config => ConfigBuilder;
 
-		public static string ConnectionString => Config.GetValue<string>("Data:ConnectionString");
+		public static string ConnectionString => Environment.GetEnvironmentVariable("CONNECTION_STRING") ?? Config.GetValue<string>("Data:ConnectionString");
 
 		public static string PasswordlessUser => Config.GetValue<string>("Data:PasswordlessUser");
 

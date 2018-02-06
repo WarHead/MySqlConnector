@@ -29,6 +29,11 @@ if [ "$IMAGE" == "mysql:8.0" ]; then
   MYSQL_EXTRA='--default-authentication-plugin=mysql_native_password'
 fi
 
+if [ "$IMAGE" == "-" ]; then
+  echo "Skipping Docker container"
+  exit 0
+fi
+
 sudo mkdir -p run/$NAME
 sudo chmod 777 run/$NAME
 
